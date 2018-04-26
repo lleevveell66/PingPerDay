@@ -11,6 +11,9 @@ mkdir /var/www/html/PingPerDay
 cp -av . /var/www/html/PingPerDay
 chown -R apache:apache /var/www/html/PingPerDay
 
+# Customize your email address:
+vi /var/www/html/PingPerDay/FindChanges
+
 # Add ppd.cron to root's crontab:  
 (crontab -l ; cat ppd.cron) | crontab -
 
