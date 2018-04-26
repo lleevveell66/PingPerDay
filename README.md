@@ -1,6 +1,7 @@
 PingPerDay v3.0 by Raymond Spangle (git@leper.org)
 --------------------------------------------------
 
+<pre>
 - edit extras/ListSubnet to reflect the subnet(s) you'd like to list
 - extras/ListSubnet > IPlist.txt
 - AND/OR manually edit IPlist.txt to contain only the IP addresses you wish to monitor
@@ -21,5 +22,4 @@ chown -R apache:apache /var/www/html/PingPerDay
 # Build the first IPCT log:
 /var/www/html/PingPerDay/IPChangeTracker/BuildBigLog
 
-
-
+</pre>
