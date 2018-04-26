@@ -1,10 +1,16 @@
 PingPerDay v3.0 by Raymond Spangle (git@leper.org)
 --------------------------------------------------
 
+![PingPerDay Main Screen Screenshot](images/capture_MainScreen.jpg?raw=true "Screen Shot")
+
+A simple set of scripts which monitors DNS and connectivity changes daily, tracking and reporting changes via email,log files, and web.
+
+![PingPerDay Change Tracker Screen Screenshot](images/capture_ChangeTracker.jpg?raw=true "Screen Shot")
+
 <pre>
-- edit extras/ListSubnet to reflect the subnet(s) you'd like to list
-- extras/ListSubnet > IPlist.txt
-- AND/OR manually edit IPlist.txt to contain only the IP addresses you wish to monitor
+# Edit extras/ListSubnet to reflect the subnet(s) you'd like to list
+extras/ListSubnet > IPlist.txt
+# AND/OR manually edit IPlist.txt to contain only the IP addresses you wish to monitor
 
 # Install into your web space:
 mkdir /var/www/html/PingPerDay
