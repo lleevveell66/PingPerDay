@@ -1,0 +1,26 @@
+#!/bin/sh
+##########################################
+# Use this script to aggregate logs from multiple hosts
+##########################################
+
+cd /var/www/html/PingPerDay/IPChangeTracker/
+/bin/rm /var/www/html/PingPerDay/IPChangeTracker/ChangeTracker.log
+
+##########################################
+# NOTE!  Change these URLs (and maybe add some) to match all of your hosts:
+##########################################
+wget -q http://localhost/PingPerDay/logs/ChangeTracker.log
+#wget -q http://somehost1.somedomain.com/PingPerDay/logs/somehost1_ChangeTracker.log
+#wget -q http://somehost2.somedomain.com/PingPerDay/logs/somehost2_ChangeTracker.log
+##########################################
+
+/bin/cat /var/www/html/PingPerDay/IPChangeTracker/*ChangeTracker.log | /bin/sed 's/<font color="\(red\|green\)">//g' \
+  | /bin/sed 's/<\/font>//g' | /bin/sort -n -k1.7,1.8 -k1.1,1.2 -k1.4,1.5 -k2 -k3 | /bin/sed 's/\ /,/g' \
+  | /bin/sed 's/\,-->//g' > /var/www/html/PingPerDay/IPChangeTracker/biglog.log
+
+/bin/cat /var/www/html/PingPerDay/IPChangeTracker/biglog.log | /bin/cut -d\, -f3 | /bin/sort -n \
+  | /usr/bin/uniq > /var/www/html/PingPerDay/IPChangeTracker/bigiplist.txt
+
+/bin/chown apache:apache /var/www/html/PingPerDay/IPChangeTracker/*
+
+exit 0

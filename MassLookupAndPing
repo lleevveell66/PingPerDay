@@ -1,0 +1,102 @@
+#!/usr/bin/perl
+#######################################################################
+# MassLookupAndPing v3.0 by Raymond Spangle (git AT leper.org)
+#######################################################################
+# USAGE:  ./MassLookupAndPing -f <ip_list_filename>
+
+use strict;
+use Socket;
+use English;
+use Getopt::Long;
+use File::stat;
+use vars qw($PROGNAME);
+
+sub print_help ();
+sub print_usage ();
+sub ip_to_name;
+
+my ($opt_v, $opt_h, $opt_f, $opt_c);
+my ($result, $message, $age, $size, $st, $ip);
+
+my $PROGNAME="MassLookupAndPing";
+my $VERSION="v2.0.0";
+my $AUTHORSTR="Raymond Spangle (git AT leper.org)";
+
+my $TIMESTAMP=`date '+%D %T'`;
+
+Getopt::Long::Configure('bundling');
+GetOptions(
+           "v"   => \$opt_v, "version"     => \$opt_v,
+           "h"   => \$opt_h, "help"        => \$opt_h,
+           "f=s" => \$opt_f, "file"        => \$opt_f);
+
+if ($opt_v) {
+             print "$PROGNAME $VERSION\n";
+             exit(0);
+            }
+
+if ($opt_h) {
+             print_help();
+             exit(0);
+            }
+
+$opt_h=shift unless ($opt_h);
+
+if (! $opt_f) {
+               print "FILENAME UNKNOWN: No filename specified\n";
+               exit(1);
+              }
+
+`/bin/mv /var/www/html/PingPerDay/logs/ppd_today.log /var/www/html/PingPerDay/logs/ppd_yesterday.log`;
+
+open(IPS,"<${opt_f}") || die "\n\n ERROR: problem opening ${opt_f}: $!\n\n";
+open(LOG,">/var/www/html/PingPerDay/logs/ppd_today.log") || die "\n\n ERROR: problem opening logs/ppd_today.log: $!\n\n";
+
+while(<IPS>)
+{
+ my $line=$_;
+ chop($line);
+
+ my $myip=$line;
+ my $name = ip_to_name($myip);
+ print LOG "$myip,$name,";
+
+ $result=`ping -c 1 -i 1 -w 2 $myip | grep received|cut -d\\, -f2`;
+ if($result==0) { print LOG "NO\n"; }
+  elsif($result==1) { print LOG "YES\n"; }
+    else { print LOG "UNKNOWN\n"; }
+
+ sleep(2);
+}
+
+close(LOG);
+close(IPS);
+
+exit(0);
+
+# - - - - - 
+
+sub print_usage () {
+ print "Usage:\n";
+ print "  $PROGNAME -f <ip_list_filename>\n";
+ print "  $PROGNAME [-h | --help]\n";
+ print "  $PROGNAME [-v | --version]\n";
+}
+
+sub print_help () {
+ print "$PROGNAME $VERSION\n";
+ print "by $AUTHORSTR\n\n";
+ print_usage();
+ print "\n";
+}
+
+sub ip_to_name {
+ my $ip=shift;
+ my $iaddr=inet_aton($ip);
+ my $name=gethostbyaddr($iaddr,AF_INET);
+ $name='NONE' if not $name;   # if unknown
+ return $name;
+}
+
+# Should never reach here
+exit(0);

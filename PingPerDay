@@ -1,0 +1,7 @@
+#!/bin/sh
+
+/var/www/html/PingPerDay/MassLookupAndPing -f /var/www/html/PingPerDay/IPlist.txt
+/var/www/html/PingPerDay/FindChanges > /var/www/html/PingPerDay/index.html
+/bin/chown -R apache:apache /var/www/html/PingPerDay
+
+exit 0

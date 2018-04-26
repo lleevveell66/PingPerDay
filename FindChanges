@@ -1,0 +1,97 @@
+#!/usr/bin/perl
+
+$MyEmailAddress="CHANGE_ME";
+
+open(IN1,"</var/www/html/PingPerDay/logs/ppd_yesterday.log") || die "$!\n";
+open(IN2,"</var/www/html/PingPerDay/logs/ppd_today.log") || die "$!\n";
+open(OUT,">/var/www/html/PingPerDay/logs/DailyChanges.log") || die "$!\n";
+open(FREE,">/var/www/html/PingPerDay/logs/FreeIPList.log") || die "$!\n";
+open(LOG,">>/var/www/html/PingPerDay/logs/ChangeTracker.log") || die "$!\n";
+
+$changes=0;
+
+$TIMESTAMP=`date '+%D %T'`;
+chop($TIMESTAMP);
+
+print <<'DONE';
+<html>
+<head><title>Ping Per Day</title></head>
+<body>
+<center><img src="images/ppd_logo.png" width="75%"></center>
+<hr>
+<center><table cellpadding="3" cellspacing="3" border="1" width="50%">
+<tr><th>Today's Changes:</th></tr>
+<tr><td>
+<center><pre>
+DONE
+
+print OUT<<'DONE';
+From: PingPerDay@localhost
+To: $MyEmailAddress
+Subject: PingPerDay Differences Were Found
+
+This is an automated message containing found differences in daily checks of pingability
+and DNS resolution of the IP addresses in my network.  For more details, please visit the 
+PPD web page at:
+
+http://localhost/PingPerDay/
+
+The differences found were:
+
+YESTERDAY --> TODAY
+(ip, hostname, pingable)
+
+
+DONE
+
+while(<IN1>)
+{
+ $inline1=$_;
+ $inline2=(<IN2>);
+ chop($inline1);
+ chop($inline2);
+ if($inline1 ne $inline2)
+ {
+  print "$inline1 --> $inline2\n";
+  print OUT "$inline1 --> $inline2\n";
+  print LOG "$TIMESTAMP $inline1 --> $inline2\n";
+  $changes++;
+ }
+ if($inline1=~/,NO$/)
+ {
+  print FREE "$inline1\n";
+ }
+}
+
+print <<'DONE';
+</pre></center>
+</td></tr>
+</table></center>
+<hr>
+<center><table cellpadding="3" cellspacing="3" border="1" width="25%">
+<tr><td>
+<ul>
+<li><a href="IPlist.txt">List of IPs</a></li>
+<li><a href="logs/ppd_yesterday.log">Yesterday's Ping Results</a></li>
+<li><a href="logs/ppd_today.log">Today's Ping Results</a></li>
+<li><a href="logs/FreeIPList.log">Probable Free IPs</a></li>
+<li><a href="logs/ChangeTracker.log">Long-Term Log of Changes</a></li>
+<li><a href="IPChangeTracker/">IP Change Tracker</a></li>
+</ul>
+</td></tr>
+</table></center>
+</td></tr>
+</body>
+</html>
+DONE
+
+close(OUT);
+close(IN2);
+close(IN1);
+
+if($changes)
+{
+ `/bin/cat /var/www/html/PingPerDay/logs/DailyChanges.log | /usr/sbin/sendmail $MyEmailAddress`;
+}
+
+exit(0);
