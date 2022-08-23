@@ -20,7 +20,7 @@ my ($result, $message, $age, $size, $st, $ip);
 
 my $PROGNAME="MassLookupAndPing";
 my $VERSION="v2.0.0";
-my $AUTHORSTR="Raymond Spangle (git AT leper.org)";
+my $AUTHORSTR="LEVEL6";
 
 my $TIMESTAMP=`date '+%D %T'`;
 
