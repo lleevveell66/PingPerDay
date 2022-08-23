@@ -1,4 +1,4 @@
-PingPerDay v3.0 by Raymond Spangle (git@leper.org)
+PingPerDay v3.0 by LEVEL6 (https://github.com/lleevveell66)
 --------------------------------------------------
 
 ![PingPerDay Main Screen Screenshot](images/capture_MainScreen.jpg?raw=true "Screen Shot")
