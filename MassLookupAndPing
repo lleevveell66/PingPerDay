@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #######################################################################
-# MassLookupAndPing v3.0 by Raymond Spangle (git AT leper.org)
+# MassLookupAndPing v3.0 by LEVEL6 (https://github.com/lleevveell66)
 #######################################################################
 # USAGE:  ./MassLookupAndPing -f <ip_list_filename>
 
